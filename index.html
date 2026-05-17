@@ -1,0 +1,543 @@
+import { useState } from "react";
+
+const certs = [
+  {
+    phase: 1,
+    phaseLabel: "Phase 1 — Foundations",
+    phaseDesc: "All 4 founders complete these. Fast, cheap, and immediately contribute to Partner Capability Score.",
+    color: "#00C9A7",
+    items: [
+      {
+        id: "AB-900",
+        name: "Copilot & Agent Administration Fundamentals",
+        level: "Fundamentals",
+        cost: "$99",
+        weeks: "2–3",
+        duration: "45 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "Never",
+        prerequisite: "None",
+        designation: "Modern Work (intermediate)",
+        whoTakes: "All 4 founders",
+        keyTopics: ["M365 core services", "Data protection & governance", "Copilot & agent administration", "Microsoft Purview basics"],
+        freeResource: "Microsoft Learn: AB-900 learning path",
+        tip: "Replaces MS-900. Focus heavily on Copilot-specific content — DSPM for AI and agent lifecycle are the hardest new areas.",
+      },
+      {
+        id: "SC-900",
+        name: "Security, Compliance & Identity Fundamentals",
+        level: "Fundamentals",
+        cost: "$99",
+        weeks: "1–2",
+        duration: "45 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "Never",
+        prerequisite: "None",
+        designation: "Security path foundation",
+        whoTakes: "All 4 founders",
+        keyTopics: ["Zero Trust model", "Microsoft Entra ID basics", "Microsoft Purview", "Defender overview", "Compliance concepts"],
+        freeResource: "Microsoft Learn: SC-900 learning path",
+        tip: "The Microsoft Learn path alone is sufficient for this one. Don't over-engineer your prep — 1–2 weeks focused study is plenty.",
+      },
+      {
+        id: "AZ-900",
+        name: "Azure Fundamentals",
+        level: "Fundamentals",
+        cost: "$99",
+        weeks: "2–4",
+        duration: "45–85 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "Never",
+        prerequisite: "None",
+        designation: "Azure path foundation",
+        whoTakes: "All 4 founders",
+        keyTopics: ["Cloud concepts", "Azure architecture & services", "Azure management & governance", "Pricing & SLAs"],
+        freeResource: "Microsoft Virtual Training Days — free exam voucher available",
+        tip: "Microsoft regularly offers free AZ-900 vouchers via Virtual Training Days. Attend a free 2-day event and save $99 per person.",
+      },
+    ],
+  },
+  {
+    phase: 2,
+    phaseLabel: "Phase 2 — Associate Level",
+    phaseDesc: "Split across the 4 founders by specialisation. Each person owns their track.",
+    color: "#FF6B6B",
+    items: [
+      {
+        id: "MD-102",
+        name: "Endpoint Administrator Associate",
+        level: "Associate",
+        cost: "$165",
+        weeks: "8–12",
+        duration: "100 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "1 year (free renewal)",
+        prerequisite: "None (AZ-900 recommended)",
+        designation: "Modern Work (intermediate)",
+        whoTakes: "Founder 1",
+        keyTopics: ["Windows 11 Autopilot deployment", "Microsoft Intune MDM/MAM", "BitLocker & Defender for Endpoint", "Conditional Access", "Microsoft Entra device identity"],
+        freeResource: "Microsoft Learn: MD-102 learning path + free M365 developer tenant for labs",
+        tip: "Hands-on Intune experience is essential — reading alone won't cut it. Set up a free M365 developer tenant and practice every deployment scenario.",
+      },
+      {
+        id: "MS-700",
+        name: "Teams Administrator Associate",
+        level: "Associate",
+        cost: "$165",
+        weeks: "6–8",
+        duration: "100 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "1 year (free renewal)",
+        prerequisite: "None (AB-900 recommended)",
+        designation: "Modern Work (intermediate)",
+        whoTakes: "Founder 4",
+        keyTopics: ["Teams deployment & lifecycle", "Meetings & live events", "Teams Phone basics", "Security & compliance in Teams", "Governance & policies"],
+        freeResource: "Microsoft Learn: MS-700 learning path",
+        tip: "Take this before MS-721. MS-700 gives the broad Teams admin knowledge; MS-721 dives deep into voice only.",
+      },
+      {
+        id: "SC-300",
+        name: "Identity & Access Administrator Associate",
+        level: "Associate",
+        cost: "$165",
+        weeks: "6–10",
+        duration: "100 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "1 year (free renewal)",
+        prerequisite: "None (SC-900 recommended)",
+        designation: "Modern Work + Security (intermediate)",
+        whoTakes: "Founder 2",
+        keyTopics: ["Microsoft Entra ID configuration", "Conditional Access policies", "Privileged Identity Management (PIM)", "Multi-factor authentication", "Identity governance & entitlement"],
+        freeResource: "John Savill YouTube (free) + M365 developer tenant with Entra ID P2",
+        tip: "PIM and Conditional Access are the hardest sections. You cannot learn these from reading — set up a dev tenant and practice hands-on.",
+      },
+      {
+        id: "SC-200",
+        name: "Security Operations Analyst Associate",
+        level: "Associate",
+        cost: "$165",
+        weeks: "8–12",
+        duration: "120 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "1 year (free renewal)",
+        prerequisite: "SC-900 strongly recommended",
+        designation: "Security (intermediate — step required)",
+        whoTakes: "Founder 3",
+        keyTopics: ["Microsoft Sentinel (50–55%)", "Microsoft 365 Defender (25–30%)", "Defender for Cloud (20–25%)", "Threat hunting", "Incident triage & response"],
+        freeResource: "Microsoft Learn: SC-200 path + free Azure subscription for Sentinel labs",
+        tip: "Microsoft Sentinel makes up over half the exam. Get hands-on with a free Azure trial — configure workspaces, connect data sources, and write KQL queries.",
+      },
+      {
+        id: "AZ-500",
+        name: "Azure Security Engineer Associate",
+        level: "Associate",
+        cost: "$165",
+        weeks: "8–12",
+        duration: "120 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "1 year (free renewal)",
+        prerequisite: "AZ-900 + SC-900 recommended",
+        designation: "Security (step 1 — mandatory for SC-100)",
+        whoTakes: "Founder 3",
+        keyTopics: ["Identity & access management", "Platform protection", "Security operations", "Data & application security", "Azure Key Vault & Defender for Cloud"],
+        freeResource: "Microsoft Learn: AZ-500 learning path + free Azure subscription",
+        tip: "Required stepping stone to SC-100. Take SC-200 and AZ-500 together — they share significant overlap in Defender for Cloud content.",
+      },
+    ],
+  },
+  {
+    phase: 3,
+    phaseLabel: "Phase 3 — Expert Level",
+    phaseDesc: "2–3 founders complete these. Unlocks advanced cert points needed for full Solutions Partner designation.",
+    color: "#A78BFA",
+    items: [
+      {
+        id: "MS-102",
+        name: "Microsoft 365 Administrator Expert",
+        level: "Expert",
+        cost: "$165",
+        weeks: "6–12",
+        duration: "120 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "1 year (free renewal)",
+        prerequisite: "MD-102 (required)",
+        designation: "Modern Work (advanced — key cert)",
+        whoTakes: "Founders 1 & 2",
+        keyTopics: ["M365 tenant management", "Microsoft Entra identity sync", "M365 security & compliance", "Defender for Office 365", "Hybrid & cloud deployment"],
+        freeResource: "Microsoft Learn: MS-102 path + M365 developer tenant",
+        tip: "The hardest M365 exam. Entra Connect/Cloud Sync hybrid identity topics trip most candidates. Build a test lab with an on-prem domain controller and practice the full sync setup.",
+      },
+      {
+        id: "MS-721",
+        name: "Collaboration Communications Systems Engineer",
+        level: "Associate/Advanced",
+        cost: "$165",
+        weeks: "8–12",
+        duration: "100 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "1 year (free renewal)",
+        prerequisite: "MS-700 strongly recommended",
+        designation: "Modern Work (counts as advanced cert)",
+        whoTakes: "Founder 4",
+        keyTopics: ["Teams Phone (40–45% of exam)", "Meetings & events (10–15%)", "Collaboration systems design (25–30%)", "Monitoring & troubleshooting (15–20%)", "PowerShell for Teams"],
+        freeResource: "Microsoft Learn: MS-721 path + Teams developer tenant",
+        tip: "Teams Phone dominates nearly half the exam. Heavy PowerShell content — practice in the Teams admin center and PowerShell daily. Traditional telecom engineers find this easier.",
+      },
+      {
+        id: "SC-100",
+        name: "Cybersecurity Architect Expert",
+        level: "Expert",
+        cost: "$165",
+        weeks: "10–14",
+        duration: "120 min",
+        questions: "40–60",
+        passingScore: 700,
+        expiry: "1 year (free renewal)",
+        prerequisite: "AZ-500 + SC-200 (strongly recommended)",
+        designation: "Security (advanced capstone)",
+        whoTakes: "Founder 3",
+        keyTopics: ["Zero Trust & GRC design (20–25%)", "Security operations & identity (25–30%)", "Infrastructure security design (25–30%)", "Application & data security (20–25%)"],
+        freeResource: "Microsoft Learn: SC-100 path + John Savill YouTube",
+        tip: "This is a design exam, not a configuration exam. You won't be asked how to configure Sentinel — you'll be asked which architecture to recommend and why. Shift your mindset from admin to architect.",
+      },
+    ],
+  },
+];
+
+const totalCost = (founders) => {
+  let total = 0;
+  certs.forEach(phase => {
+    phase.items.forEach(cert => {
+      const price = parseInt(cert.cost.replace("$", ""));
+      const count = cert.whoTakes.toLowerCase().includes("all 4") ? 4 : cert.whoTakes.toLowerCase().includes("founders 1 & 2") ? 2 : 1;
+      total += price * count;
+    });
+  });
+  return total;
+};
+
+const levelColor = {
+  "Fundamentals": "#00C9A7",
+  "Associate": "#FF6B6B",
+  "Associate/Advanced": "#FF8C42",
+  "Expert": "#A78BFA",
+};
+
+export default function CertPrepPlan() {
+  const [expanded, setExpanded] = useState(null);
+  const [completed, setCompleted] = useState({});
+  const [activePhase, setActivePhase] = useState("all");
+
+  const toggle = (id) => setExpanded(expanded === id ? null : id);
+  const toggleComplete = (id, e) => {
+    e.stopPropagation();
+    setCompleted(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const allCerts = certs.flatMap(p => p.items);
+  const completedCount = Object.values(completed).filter(Boolean).length;
+  const totalCount = allCerts.length;
+  const progressPct = Math.round((completedCount / totalCount) * 100);
+
+  const visiblePhases = activePhase === "all" ? certs : certs.filter(p => p.phase === parseInt(activePhase));
+
+  return (
+    <div style={{
+      fontFamily: "'Georgia', 'Times New Roman', serif",
+      background: "#0a0a0f",
+      minHeight: "100vh",
+      color: "#e8e6e0",
+      padding: "0",
+    }}>
+      {/* Header */}
+      <div style={{
+        background: "linear-gradient(135deg, #0d0d1a 0%, #111128 50%, #0a0a0f 100%)",
+        borderBottom: "1px solid #1e1e3a",
+        padding: "40px 32px 32px",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        <div style={{
+          position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+          backgroundImage: "radial-gradient(circle at 20% 50%, rgba(0,201,167,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(167,139,250,0.05) 0%, transparent 50%)",
+          pointerEvents: "none",
+        }} />
+        <div style={{ maxWidth: 900, margin: "0 auto", position: "relative" }}>
+          <div style={{ fontSize: 11, letterSpacing: "0.3em", color: "#00C9A7", textTransform: "uppercase", marginBottom: 12, fontFamily: "'Georgia', serif" }}>
+            Microsoft AI Cloud Partner Program
+          </div>
+          <h1 style={{
+            fontSize: "clamp(24px, 4vw, 38px)",
+            fontWeight: 400,
+            color: "#f0ede8",
+            margin: "0 0 8px",
+            letterSpacing: "-0.02em",
+            fontFamily: "'Georgia', serif",
+          }}>
+            Certification Preparation Plan
+          </h1>
+          <p style={{ color: "#8a8a9a", fontSize: 14, margin: "0 0 28px", fontFamily: "system-ui, sans-serif" }}>
+            4 Founders · 11 Exams · Modern Work &amp; Security Designations
+          </p>
+
+          {/* Progress bar */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+            <div style={{ flex: 1, background: "#1a1a2e", borderRadius: 4, height: 6, overflow: "hidden" }}>
+              <div style={{
+                width: `${progressPct}%`,
+                height: "100%",
+                background: "linear-gradient(90deg, #00C9A7, #A78BFA)",
+                borderRadius: 4,
+                transition: "width 0.5s ease",
+              }} />
+            </div>
+            <span style={{ fontSize: 13, color: "#8a8a9a", fontFamily: "system-ui", whiteSpace: "nowrap" }}>
+              {completedCount}/{totalCount} passed
+            </span>
+          </div>
+
+          {/* Stats row */}
+          <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+            {[
+              { label: "Total Exams", value: "11" },
+              { label: "Est. Investment", value: `$${totalCost().toLocaleString()}` },
+              { label: "Timeline", value: "12–18 months" },
+              { label: "Designations", value: "Modern Work + Security" },
+            ].map(s => (
+              <div key={s.label} style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid #1e1e3a",
+                borderRadius: 8,
+                padding: "12px 20px",
+                fontFamily: "system-ui, sans-serif",
+              }}>
+                <div style={{ fontSize: 10, color: "#6a6a7a", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>{s.label}</div>
+                <div style={{ fontSize: 18, color: "#f0ede8", fontWeight: 600 }}>{s.value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Phase filter */}
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 32px 0" }}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {["all", "1", "2", "3"].map(p => (
+            <button key={p} onClick={() => setActivePhase(p)} style={{
+              padding: "6px 16px",
+              borderRadius: 20,
+              border: "1px solid",
+              borderColor: activePhase === p ? "#00C9A7" : "#2a2a3e",
+              background: activePhase === p ? "rgba(0,201,167,0.1)" : "transparent",
+              color: activePhase === p ? "#00C9A7" : "#6a6a7a",
+              cursor: "pointer",
+              fontSize: 12,
+              fontFamily: "system-ui, sans-serif",
+              letterSpacing: "0.05em",
+              transition: "all 0.2s",
+            }}>
+              {p === "all" ? "All Phases" : `Phase ${p}`}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Cert list */}
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 32px 48px" }}>
+        {visiblePhases.map(phase => (
+          <div key={phase.phase} style={{ marginBottom: 40 }}>
+            {/* Phase header */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+                <div style={{
+                  width: 28, height: 28, borderRadius: "50%",
+                  background: `${phase.color}22`,
+                  border: `1.5px solid ${phase.color}`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 12, color: phase.color, fontWeight: 700,
+                  fontFamily: "system-ui",
+                }}>{phase.phase}</div>
+                <h2 style={{ fontSize: 17, fontWeight: 400, color: "#f0ede8", margin: 0, letterSpacing: "-0.01em" }}>{phase.phaseLabel}</h2>
+              </div>
+              <p style={{ fontSize: 13, color: "#6a6a7a", margin: "0 0 0 40px", fontFamily: "system-ui" }}>{phase.phaseDesc}</p>
+            </div>
+
+            {/* Cert cards */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {phase.items.map((cert, idx) => {
+                const isOpen = expanded === cert.id;
+                const isDone = completed[cert.id];
+                return (
+                  <div key={cert.id} style={{
+                    background: isDone ? "rgba(0,201,167,0.04)" : "rgba(255,255,255,0.02)",
+                    border: `1px solid ${isDone ? "rgba(0,201,167,0.3)" : isOpen ? "#2a2a4e" : "#1a1a2e"}`,
+                    borderRadius: 10,
+                    overflow: "hidden",
+                    transition: "border-color 0.2s",
+                    opacity: isDone ? 0.75 : 1,
+                  }}>
+                    {/* Card header row */}
+                    <div onClick={() => toggle(cert.id)} style={{
+                      display: "flex", alignItems: "center", gap: 12,
+                      padding: "16px 20px", cursor: "pointer",
+                    }}>
+                      {/* Checkbox */}
+                      <button onClick={(e) => toggleComplete(cert.id, e)} style={{
+                        width: 22, height: 22, borderRadius: 4,
+                        border: `1.5px solid ${isDone ? "#00C9A7" : "#3a3a5a"}`,
+                        background: isDone ? "#00C9A7" : "transparent",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        cursor: "pointer", flexShrink: 0,
+                        transition: "all 0.2s",
+                      }}>
+                        {isDone && <span style={{ color: "#0a0a0f", fontSize: 12, fontWeight: 700 }}>✓</span>}
+                      </button>
+
+                      {/* Exam ID badge */}
+                      <div style={{
+                        background: `${levelColor[cert.level]}18`,
+                        border: `1px solid ${levelColor[cert.level]}44`,
+                        color: levelColor[cert.level],
+                        borderRadius: 6, padding: "3px 9px",
+                        fontSize: 11, fontWeight: 700, letterSpacing: "0.05em",
+                        fontFamily: "system-ui", flexShrink: 0,
+                      }}>{cert.id}</div>
+
+                      {/* Name */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 14, color: isDone ? "#6a6a7a" : "#e8e6e0", fontFamily: "'Georgia', serif", textDecoration: isDone ? "line-through" : "none" }}>
+                          {cert.name}
+                        </div>
+                        <div style={{ fontSize: 11, color: "#5a5a6a", marginTop: 2, fontFamily: "system-ui" }}>
+                          {cert.whoTakes} · {cert.weeks} weeks · {cert.cost}
+                        </div>
+                      </div>
+
+                      {/* Level pill */}
+                      <div style={{
+                        fontSize: 10, color: levelColor[cert.level],
+                        letterSpacing: "0.08em", textTransform: "uppercase",
+                        fontFamily: "system-ui", flexShrink: 0,
+                        display: "none",
+                      }}>{cert.level}</div>
+
+                      {/* Chevron */}
+                      <div style={{
+                        color: "#4a4a6a", fontSize: 12,
+                        transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                        transition: "transform 0.2s",
+                      }}>▾</div>
+                    </div>
+
+                    {/* Expanded detail */}
+                    {isOpen && (
+                      <div style={{
+                        borderTop: "1px solid #1a1a2e",
+                        padding: "20px 20px 20px 54px",
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: 20,
+                        fontFamily: "system-ui, sans-serif",
+                        fontSize: 13,
+                      }}>
+                        {/* Left column */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                          <div>
+                            <div style={{ fontSize: 10, color: "#5a5a6a", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>Exam Details</div>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 16px" }}>
+                              {[
+                                ["Cost", cert.cost],
+                                ["Duration", cert.duration],
+                                ["Questions", cert.questions],
+                                ["Pass Score", `${cert.passingScore}/1000`],
+                                ["Validity", cert.expiry],
+                                ["Prerequisite", cert.prerequisite],
+                              ].map(([k, v]) => (
+                                <div key={k}>
+                                  <span style={{ color: "#5a5a6a" }}>{k}: </span>
+                                  <span style={{ color: "#c8c6c0" }}>{v}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div>
+                            <div style={{ fontSize: 10, color: "#5a5a6a", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>Designation</div>
+                            <div style={{ color: "#A78BFA", fontSize: 12 }}>{cert.designation}</div>
+                          </div>
+
+                          <div>
+                            <div style={{ fontSize: 10, color: "#5a5a6a", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>Free Resource</div>
+                            <div style={{ color: "#00C9A7", fontSize: 12 }}>{cert.freeResource}</div>
+                          </div>
+                        </div>
+
+                        {/* Right column */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                          <div>
+                            <div style={{ fontSize: 10, color: "#5a5a6a", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>Key Topics</div>
+                            <ul style={{ margin: 0, padding: "0 0 0 16px", color: "#a8a6a0", lineHeight: 1.8 }}>
+                              {cert.keyTopics.map(t => <li key={t}>{t}</li>)}
+                            </ul>
+                          </div>
+
+                          <div style={{
+                            background: "rgba(255,200,50,0.06)",
+                            border: "1px solid rgba(255,200,50,0.2)",
+                            borderRadius: 8, padding: "12px 14px",
+                          }}>
+                            <div style={{ fontSize: 10, color: "#d4a017", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Exam Tip</div>
+                            <div style={{ color: "#c8c6c0", lineHeight: 1.6, fontSize: 12 }}>{cert.tip}</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+
+        {/* Footer notes */}
+        <div style={{
+          borderTop: "1px solid #1a1a2e",
+          paddingTop: 24,
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: 16,
+          fontFamily: "system-ui, sans-serif",
+          fontSize: 12,
+          color: "#5a5a6a",
+        }}>
+          {[
+            ["Retake Policy", "Fail → 24h wait. Subsequent fails → 14 days. Max 5 attempts per exam per year."],
+            ["Free Renewals", "All role-based certs (Associate/Expert) renew annually via a free online assessment on Microsoft Learn."],
+            ["Email Tip", "Take all exams under personal Microsoft accounts, not company email. Then link to Partner Center."],
+            ["Cost Saving", "Watch for Microsoft Virtual Training Days — free AZ-900 and other vouchers offered regularly."],
+          ].map(([title, text]) => (
+            <div key={title} style={{
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid #1a1a2e",
+              borderRadius: 8,
+              padding: "14px 16px",
+            }}>
+              <div style={{ fontSize: 10, color: "#6a6a7a", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>{title}</div>
+              <div style={{ lineHeight: 1.6 }}>{text}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
